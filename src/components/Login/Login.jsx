@@ -4,13 +4,17 @@ const Login = (props) => {
   return (
     <div className="login-container">
       <div className="nav">
-        <a href="">
+        <a href="/">
           <img src="/images/login-logo.svg" alt=""></img>
         </a>
 
         <div className="login-join">
-          <a className="join"> Login</a>
-          <a className="sign-in">Sign in</a>
+          <a className="join" href="/">
+            Login
+          </a>
+          <a className="sign-in" href="/">
+            Sign in
+          </a>
         </div>
       </div>
       <div className="login-section">
@@ -19,12 +23,12 @@ const Login = (props) => {
             <h1>Welcome to your professional comunity</h1>
             <div className="google-form">
               <button className="google-btn">
-                <img src="/images/google.svg"></img>
+                <img src="/images/google.svg" alt=""></img>
                 Sign in with Google
               </button>
             </div>
           </div>
-          <img src="/images/login-hero.svg"></img>
+          <img src="/images/login-hero.svg" alt=""></img>
         </div>
       </div>
     </div>
