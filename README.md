@@ -1,70 +1,191 @@
-# Getting Started with Create React App
+# LinkedIn Clone - Full-Stack Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A production-ready LinkedIn clone built with modern technologies including React, TypeScript, Node.js, Express, PostgreSQL, and Socket.io.
 
-## Available Scripts
+## 🚀 Tech Stack
 
-In the project directory, you can run:
+### Frontend
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Redux Toolkit** - State management
+- **Styled Components** - CSS-in-JS styling
+- **Socket.io Client** - Real-time features
+- **Axios** - HTTP client
+- **Formik + Yup** - Form handling and validation
 
-### `npm start`
+### Backend
+- **Node.js + Express** - Server framework
+- **TypeScript** - Type safety
+- **PostgreSQL** - Relational database
+- **Socket.io** - Real-time messaging
+- **JWT** - Authentication
+- **Passport.js** - Google OAuth
+- **Cloudinary** - Media uploads
+- **Redis** - Caching
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 📁 Project Structure
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```
+linkedin-clone/
+├── client/              # React frontend
+│   ├── src/
+│   │   ├── app/         # Redux store
+│   │   ├── features/    # Redux slices
+│   │   ├── components/  # React components
+│   │   ├── pages/       # Page components
+│   │   ├── services/    # API services
+│   │   └── types/       # TypeScript types
+│   └── package.json
+├── server/              # Node.js backend
+│   ├── src/
+│   │   ├── config/      # Configuration
+│   │   ├── controllers/ # Route controllers
+│   │   ├── middleware/  # Express middleware
+│   │   ├── routes/      # API routes
+│   │   ├── services/    # Business logic
+│   │   ├── socket/      # Socket.io handlers
+│   │   └── db/          # Database schema
+│   └── package.json
+├── shared/              # Shared TypeScript types
+│   └── types/
+└── docker-compose.yml   # Database containers
+```
 
-### `npm test`
+## 🛠️ Getting Started
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
+- Node.js v18+
+- Docker & Docker Compose
+- npm or yarn
 
-### `npm run build`
+### Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Install dependencies**
+   ```bash
+   npm install
+   cd client && npm install
+   cd ../server && npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. **Setup environment variables**
+   - Copy `server/.env.example` to `server/.env`
+   - Copy `client/.env.example` to `client/.env.local`
+   - Update with your credentials
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Start Docker containers**
+   ```bash
+   npm run docker:up
+   ```
 
-### `npm run eject`
+4. **Run development servers**
+   ```bash
+   npm run dev
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Client: http://localhost:3000
+Server: http://localhost:5000
+pgAdmin: http://localhost:5050 (admin@admin.com / admin)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📦 Scripts
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm run dev              # Run client and server concurrently
+npm run client           # Run client only
+npm run server           # Run server only
+npm run docker:up        # Start Docker containers
+npm run docker:down      # Stop Docker containers
+npm run build            # Build both client and server
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## ✨ Features
 
-## Learn More
+### Completed ✅
+- [x] Monorepo structure with workspaces
+- [x] TypeScript configuration
+- [x] PostgreSQL database schema
+- [x] Express server setup
+- [x] Shared type definitions
+- [x] Docker setup (PostgreSQL + Redis + pgAdmin)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### In Progress 🚧
+- [ ] JWT authentication
+- [ ] Google OAuth 2.0
+- [ ] User profiles
+- [ ] Posts CRUD
+- [ ] Real-time messaging
+- [ ] Image uploads
+- [ ] Job postings
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Planned 📋
+- [ ] Testing suite
+- [ ] Performance optimization
+- [ ] CI/CD pipeline
+- [ ] Production deployment
 
-### Code Splitting
+## 🗄️ Database Schema
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Main tables:
+- **users** - User accounts and profiles
+- **posts** - User posts with media
+- **comments** - Post comments
+- **connections** - User network
+- **jobs** - Job postings
+- **job_applications** - Applications
+- **messages** - Direct messaging
+- **notifications** - Activity notifications
 
-### Analyzing the Bundle Size
+## 📚 API Endpoints (Planned)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+Auth:     POST /api/v1/auth/register, /login, /refresh
+Users:    GET  /api/v1/users/me, /:id
+Posts:    GET  /api/v1/posts, POST /posts
+Jobs:     GET  /api/v1/jobs, POST /jobs
+Messages: GET  /api/v1/messages, POST /messages
+```
 
-### Making a Progressive Web App
+## 🔐 Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Server (.env)
+```env
+PORT=5000
+DATABASE_URL=postgresql://postgres:password@localhost:5432/linkedin_clone
+JWT_SECRET=your_secret_32_chars_minimum
+GOOGLE_CLIENT_ID=your_google_client_id
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+```
 
-### Advanced Configuration
+### Client (.env.local)
+```env
+REACT_APP_API_URL=http://localhost:5000/api/v1
+REACT_APP_SOCKET_URL=http://localhost:5000
+REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📝 Development Guidelines
 
-### Deployment
+- Use TypeScript strict mode
+- Follow ESLint rules
+- Use functional components
+- Write meaningful commit messages
+- Test before committing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 🚀 Deployment
 
-### `npm run build` fails to minify
+1. Build: `npm run build`
+2. Deploy client to Vercel/Netlify
+3. Deploy server to Railway/Render
+4. Configure production environment variables
+5. Run database migrations
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 📄 License
+
+MIT License
+
+## 👨‍💻 Author
+
+**Edward Duong**
+
+---
+
+**Status**: Active Development 🚀
