@@ -1,6 +1,7 @@
 .header-container {
   background-color: white;
-  border-bottom: 1px solid (rgba(0, 0, 0, 0.08));
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
   left: 0;
   position: fixed;
   top: 0;

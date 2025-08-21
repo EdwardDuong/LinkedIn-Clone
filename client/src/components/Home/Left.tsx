@@ -1,14 +1,18 @@
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
+import { useAppSelector } from '../../app/hooks';
 
-const Leftside = (props) => {
+const Leftside: React.FC = () => {
+  const { user } = useAppSelector((state) => state.auth);
+
   return (
     <Container>
       <ArtCard>
         <UserInfo>
           <CardBackground />
           <a>
-            <Photo />
-            <Link>Welcome, there!</Link>
+            <Photo style={{ backgroundImage: user?.profilePicture ? `url(${user.profilePicture})` : undefined }} />
+            <Link>Welcome, {user ? `${user.firstName} ${user.lastName}` : 'there'}!</Link>
           </a>
           <a>
             <AddPhotoText>Add a photo</AddPhotoText>
@@ -20,12 +24,12 @@ const Leftside = (props) => {
               <span>Connections</span>
               <span>Grow your network</span>
             </div>
-            <img src="/images/widget-icon.svg" alt="" />
+            <img src="/images/widget-icon.svg" alt="Widget" />
           </a>
         </Widget>
         <Item>
           <span>
-            <img src="/images/item-icon.svg" alt="" />
+            <img src="/images/item-icon.svg" alt="Item" />
             My Items
           </span>
         </Item>
@@ -38,7 +42,7 @@ const Leftside = (props) => {
         <a>
           <span>
             Events
-            <img src="/images/plus-icon.svg" alt="" />
+            <img src="/images/plus-icon.svg" alt="Plus" />
           </span>
         </a>
         <a>
@@ -76,7 +80,7 @@ const UserInfo = styled.div`
 `;
 
 const CardBackground = styled.div`
-  background: url("/images/card-bg.svg");
+  background: url('/images/card-bg.svg');
   background-position: center;
   background-size: 462px;
   height: 54px;
@@ -86,7 +90,7 @@ const CardBackground = styled.div`
 
 const Photo = styled.div`
   box-shadow: none;
-  background-image: url("/images/photo.svg");
+  background-image: url('/images/photo.svg');
   width: 72px;
   height: 72px;
   box-sizing: border-box;
