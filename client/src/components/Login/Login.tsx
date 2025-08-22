@@ -39,8 +39,10 @@ const Login: React.FC = () => {
       try {
         await dispatch(loginUser(values)).unwrap();
         toast.success('Login successful!');
-      } catch (err) {
-        // Error handled by useEffect
+      } catch (err: any) {
+        // Show error immediately
+        const errorMessage = err || 'Login failed. Please check your credentials.';
+        toast.error(errorMessage);
       }
     },
   });
@@ -68,8 +70,10 @@ const Login: React.FC = () => {
       try {
         await dispatch(registerUser(values)).unwrap();
         toast.success('Registration successful!');
-      } catch (err) {
-        // Error handled by useEffect
+      } catch (err: any) {
+        // Show error immediately
+        const errorMessage = err || 'Registration failed. Please try again.';
+        toast.error(errorMessage);
       }
     },
   });
@@ -88,10 +92,10 @@ const Login: React.FC = () => {
         </a>
 
         <div className="login-join">
-          <button className="join" onClick={handleToggleMode}>
+          <button type="button" className="join" onClick={handleToggleMode}>
             {isSignUp ? 'Sign In' : 'Join now'}
           </button>
-          <button className="sign-in" onClick={handleToggleMode}>
+          <button type="button" className="sign-in" onClick={handleToggleMode}>
             {isSignUp ? 'Already have an account?' : 'Sign in'}
           </button>
         </div>
@@ -213,7 +217,7 @@ const Login: React.FC = () => {
             </div>
 
             <div className="google-form">
-              <button className="google-btn" disabled>
+              <button type="button" className="google-btn" disabled>
                 <img src="/images/google.svg" alt="Google" />
                 Sign in with Google (Coming Soon)
               </button>

@@ -29,7 +29,13 @@ export const loginUser = createAsyncThunk(
       const response = await authApi.login(credentials);
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Login failed');
+      // Extract error message from various possible structures
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Invalid email or password';
+      return rejectWithValue(message);
     }
   }
 );
@@ -41,7 +47,13 @@ export const registerUser = createAsyncThunk(
       const response = await authApi.register(data);
       return response;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Registration failed');
+      // Extract error message from various possible structures
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Registration failed';
+      return rejectWithValue(message);
     }
   }
 );

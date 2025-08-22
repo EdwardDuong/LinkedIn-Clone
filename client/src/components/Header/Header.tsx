@@ -107,7 +107,7 @@ const Header: React.FC = () => {
               </a>
 
               <div className="sign-out">
-                <a onClick={handleSignOut}>Sign out</a>
+                <button type="button" onClick={handleSignOut}>Sign out</button>
               </div>
             </div>
             <div className="header-nav_work">

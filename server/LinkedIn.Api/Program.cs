@@ -1,5 +1,6 @@
 using LinkedIn.Application;
 using LinkedIn.Infrastructure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -53,6 +54,13 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }
     });
+
+    // Support for IFormFile in Swagger
+    c.MapType<IFormFile>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "binary"
+    });
 });
 
 // CORS
@@ -82,21 +90,21 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-// Auto-migrate database on startup
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<LinkedIn.Infrastructure.Data.ApplicationDbContext>();
-        context.Database.Migrate();
-        Log.Information("Database migration completed successfully");
-    }
-    catch (Exception ex)
-    {
-        Log.Error(ex, "An error occurred while migrating the database");
-    }
-}
+// Auto-migrate database on startup (disabled - tables created manually)
+// using (var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+//     try
+//     {
+//         var context = services.GetRequiredService<LinkedIn.Infrastructure.Data.ApplicationDbContext>();
+//         context.Database.Migrate();
+//         Log.Information("Database migration completed successfully");
+//     }
+//     catch (Exception ex)
+//     {
+//         Log.Error(ex, "An error occurred while migrating the database");
+//     }
+// }
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())

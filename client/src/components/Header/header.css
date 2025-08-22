@@ -155,6 +155,31 @@
   transition-duration: 167ms;
   text-align: center;
   display: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
+  z-index: 1000;
+}
+
+.header-nav_user:hover .sign-out {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign-out button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 14px;
+  font-weight: 550;
+  padding: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.sign-out button:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+  border-radius: 5px;
 }
 @media screen and (max-width: 768px) {
   .hearder-nav {
