@@ -33,18 +33,29 @@ export const createPost = createAsyncThunk(
   }
 );
 
-// TODO: Add more thunks
-// export const fetchPosts = createAsyncThunk(
-//   'posts/fetchPosts',
-//   async ({ page, limit }: { page: number; limit: number }, { rejectWithValue }) => {
-//     try {
-//       const response = await postsApi.getFeed(page, limit);
-//       return response;
-//     } catch (error: any) {
-//       return rejectWithValue(error.response?.data?.message || 'Failed to fetch posts');
-//     }
-//   }
-// );
+export const fetchPosts = createAsyncThunk(
+  'posts/fetchPosts',
+  async ({ page = 1, limit = 10 }: { page?: number; limit?: number } = {}, { rejectWithValue }) => {
+    try {
+      const response = await postsApi.getFeed(page, limit);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch posts');
+    }
+  }
+);
+
+export const likePost = createAsyncThunk(
+  'posts/like',
+  async (postId: string, { rejectWithValue }) => {
+    try {
+      await postsApi.likePost(postId);
+      return postId;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to like post');
+    }
+  }
+);
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -87,7 +98,30 @@ const postsSlice = createSlice({
         state.error = action.payload as string;
       });
 
-    // TODO: Add more cases for fetchPosts, likePost, deletePost, etc.
+    // Fetch posts
+    builder
+      .addCase(fetchPosts.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.posts = action.payload;
+        state.hasMore = action.payload.length >= 10;
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
+
+    // Like post
+    builder
+      .addCase(likePost.fulfilled, (state, action) => {
+        const post = state.posts.find((p) => p.id === action.payload);
+        if (post) {
+          post.likesCount += 1;
+        }
+      });
   },
 });
 

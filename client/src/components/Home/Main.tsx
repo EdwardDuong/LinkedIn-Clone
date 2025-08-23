@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { createPost } from '../../features/posts/postsSlice';
+import { createPost, fetchPosts, likePost } from '../../features/posts/postsSlice';
 import { toast } from 'react-toastify';
 
 const Main: React.FC = () => {
@@ -10,6 +10,11 @@ const Main: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { posts, isLoading } = useAppSelector((state) => state.posts);
+
+  // Fetch posts on component mount
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, [dispatch]);
 
   const handleCreatePost = async () => {
     if (!postContent.trim()) {
@@ -22,8 +27,17 @@ const Main: React.FC = () => {
       toast.success('Post created successfully!');
       setPostContent('');
       setShowPostModal(false);
-    } catch (err) {
-      toast.error('Failed to create post');
+    } catch (err: any) {
+      const errorMessage = err || 'Failed to create post';
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleLikePost = async (postId: string) => {
+    try {
+      await dispatch(likePost(postId)).unwrap();
+    } catch (err: any) {
+      toast.error('Failed to like post');
     }
   };
 
@@ -68,6 +82,14 @@ const Main: React.FC = () => {
         </div>
       </ShareBox>
       <div>
+        {isLoading && posts.length === 0 && (
+          <LoadingMessage>Loading posts...</LoadingMessage>
+        )}
+        {!isLoading && posts.length === 0 && (
+          <EmptyMessage>
+            <p>No posts yet. Be the first to share something!</p>
+          </EmptyMessage>
+        )}
         {posts.map((post) => (
           <Article key={post.id}>
             <SharedActor>
@@ -106,19 +128,19 @@ const Main: React.FC = () => {
                 </li>
               </SocialCount>
               <CommentSection>
-                <button>
+                <button type="button" onClick={() => handleLikePost(post.id)}>
                   <img src="/images/like-icon.svg" alt="Like" />
                   <span>Like</span>
                 </button>
-                <button>
+                <button type="button">
                   <img src="/images/comment-icon.svg" alt="Comment" />
                   <span>Comment</span>
                 </button>
-                <button>
+                <button type="button">
                   <img src="/images/share-icon.svg" alt="Share" />
                   <span>Share</span>
                 </button>
-                <button>
+                <button type="button">
                   <img src="/images/send-icon.svg" alt="Send" />
                   <span>Send</span>
                 </button>
@@ -351,6 +373,23 @@ const CommentSection = styled.div`
       display: flex;
       gap: 2px;
     }
+  }
+`;
+
+const LoadingMessage = styled(CommonCard)`
+  padding: 40px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 16px;
+`;
+
+const EmptyMessage = styled(CommonCard)`
+  padding: 40px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+  p {
+    font-size: 16px;
+    margin: 0;
   }
 `;
 

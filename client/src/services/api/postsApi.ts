@@ -7,17 +7,16 @@ export const postsApi = {
     return response.data;
   },
 
-  // TODO: Add more endpoints
-  // getFeed: async (page: number, limit: number): Promise<Post[]> => {
-  //   const response = await axiosInstance.get<Post[]>(`/posts?page=${page}&limit=${limit}`);
-  //   return response.data;
-  // },
+  getFeed: async (page: number = 1, limit: number = 10): Promise<Post[]> => {
+    const response = await axiosInstance.get<Post[]>(`/posts/feed?page=${page}&limit=${limit}`);
+    return response.data;
+  },
 
-  // likePost: async (postId: string): Promise<void> => {
-  //   await axiosInstance.post(`/posts/${postId}/like`);
-  // },
+  likePost: async (postId: string): Promise<void> => {
+    await axiosInstance.post(`/posts/${postId}/like`);
+  },
 
-  // deletePost: async (postId: string): Promise<void> => {
-  //   await axiosInstance.delete(`/posts/${postId}`);
-  // },
+  deletePost: async (postId: string): Promise<void> => {
+    await axiosInstance.delete(`/posts/${postId}`);
+  },
 };
