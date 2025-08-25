@@ -296,13 +296,12 @@ LinkedIn-Clone/
 - `POST /api/v1/Auth/logout` - Logout user
 
 ### Posts
-- `GET /api/v1/Posts` - Get all posts (paginated)
+- `GET /api/v1/Posts/feed` - Get user feed (paginated)
 - `POST /api/v1/Posts` - Create new post
-- `PUT /api/v1/Posts/{id}` - Update post
-- `DELETE /api/v1/Posts/{id}` - Delete post
-- `POST /api/v1/Posts/{id}/like` - Like/unlike post
-- `GET /api/v1/Posts/{id}/comments` - Get post comments
-- `POST /api/v1/Posts/{id}/comments` - Add comment
+- `POST /api/v1/Posts/{postId}/like` - Like/unlike post
+
+### File Upload
+- `POST /api/v1/FileUpload` - Upload image to Cloudinary
 
 **For complete API documentation, visit Swagger UI at http://localhost:5265**
 
