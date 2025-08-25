@@ -98,8 +98,13 @@ const Header: React.FC = () => {
               <img
                 src={user?.profilePicture || '/images/user.svg'}
                 alt="User"
+                onClick={() => navigate('/profile')}
+                style={{ cursor: 'pointer' }}
               />
-              <a href="/" className="user" onClick={(e) => e.preventDefault()}>
+              <a href="/" className="user" onClick={(e) => {
+                e.preventDefault();
+                navigate('/profile');
+              }}>
                 <span>
                   {user ? `${user.firstName} ${user.lastName}` : 'Me'}
                 </span>
