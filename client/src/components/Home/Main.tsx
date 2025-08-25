@@ -7,6 +7,9 @@ import { toast } from 'react-toastify';
 const Main: React.FC = () => {
   const [showPostModal, setShowPostModal] = useState(false);
   const [postContent, setPostContent] = useState('');
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [uploading, setUploading] = useState(false);
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { posts, isLoading } = useAppSelector((state) => state.posts);
@@ -16,20 +19,75 @@ const Main: React.FC = () => {
     dispatch(fetchPosts());
   }, [dispatch]);
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('Image size must be less than 10MB');
+        return;
+      }
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview('');
+  };
+
   const handleCreatePost = async () => {
-    if (!postContent.trim()) {
-      toast.error('Post content cannot be empty');
+    if (!postContent.trim() && !selectedImage) {
+      toast.error('Post must have content or an image');
       return;
     }
 
     try {
-      await dispatch(createPost({ content: postContent })).unwrap();
+      setUploading(true);
+      let mediaUrl = '';
+
+      // Upload image if selected
+      if (selectedImage) {
+        const formData = new FormData();
+        formData.append('file', selectedImage);
+
+        const uploadResponse = await fetch('http://localhost:5265/api/v1/FileUpload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+          },
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const uploadData = await uploadResponse.json();
+        mediaUrl = uploadData.url;
+      }
+
+      // Create post with or without image
+      await dispatch(createPost({
+        content: postContent,
+        mediaUrl: mediaUrl || undefined,
+        mediaType: selectedImage ? 'image' : undefined
+      })).unwrap();
+
       toast.success('Post created successfully!');
       setPostContent('');
+      setSelectedImage(null);
+      setImagePreview('');
       setShowPostModal(false);
     } catch (err: any) {
-      const errorMessage = err || 'Failed to create post';
+      const errorMessage = err?.message || err || 'Failed to create post';
       toast.error(errorMessage);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -46,7 +104,7 @@ const Main: React.FC = () => {
       <ShareBox>
         <div>
           <img src={user?.profilePicture || '/images/user.svg'} alt="User" />
-          <button onClick={() => setShowPostModal(!showPostModal)}>
+          <button type="button" onClick={() => setShowPostModal(!showPostModal)}>
             Start a post
           </button>
         </div>
@@ -57,25 +115,49 @@ const Main: React.FC = () => {
               value={postContent}
               onChange={(e) => setPostContent(e.target.value)}
             />
-            <button onClick={handleCreatePost} disabled={isLoading}>
-              {isLoading ? 'Posting...' : 'Post'}
-            </button>
+            {imagePreview && (
+              <ImagePreviewContainer>
+                <img src={imagePreview} alt="Preview" />
+                <RemoveImageButton type="button" onClick={handleRemoveImage}>
+                  ✕
+                </RemoveImageButton>
+              </ImagePreviewContainer>
+            )}
+            <PostActions>
+              <input
+                type="file"
+                id="image-upload"
+                accept="image/*"
+                onChange={handleImageSelect}
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="image-upload" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <img src="/images/photo-icon.svg" alt="Add photo" style={{ width: '20px' }} />
+                <span style={{ fontSize: '14px', color: '#70b5f9' }}>Add photo</span>
+              </label>
+              <button onClick={handleCreatePost} disabled={isLoading || uploading}>
+                {uploading ? 'Uploading...' : isLoading ? 'Posting...' : 'Post'}
+              </button>
+            </PostActions>
           </PostModal>
         )}
         <div>
-          <button>
+          <button type="button" onClick={() => {
+            setShowPostModal(true);
+            setTimeout(() => document.getElementById('image-upload')?.click(), 100);
+          }}>
             <img src="/images/photo-icon.svg" alt="Photo" />
             <span>Photo</span>
           </button>
-          <button>
+          <button type="button">
             <img src="/images/video-icon.svg" alt="Video" />
             <span>Video</span>
           </button>
-          <button>
+          <button type="button">
             <img src="/images/event-icon.svg" alt="Event" />
             <span>Event</span>
           </button>
-          <button>
+          <button type="button">
             <img src="/images/article-icon.svg" alt="Article" />
             <span>Article</span>
           </button>
@@ -234,9 +316,46 @@ const PostModal = styled.div`
     font-family: inherit;
     font-size: 14px;
     resize: vertical;
+    margin-bottom: 12px;
   }
+`;
+
+const ImagePreviewContainer = styled.div`
+  position: relative;
+  margin-bottom: 12px;
+  img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+`;
+
+const RemoveImageButton = styled.button`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+  }
+`;
+
+const PostActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   button {
-    margin-top: 8px;
     padding: 8px 24px;
     background-color: #0a66c2;
     color: white;
