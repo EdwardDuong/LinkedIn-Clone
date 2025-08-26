@@ -19,5 +19,8 @@ public class MappingProfile : Profile
         // Comment mappings
         CreateMap<Comment, CommentDto>()
             .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User));
+
+        // Connection mappings
+        CreateMap<Connection, ConnectionDto>();
     }
 }
