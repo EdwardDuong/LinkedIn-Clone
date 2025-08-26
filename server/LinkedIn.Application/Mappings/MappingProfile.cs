@@ -11,5 +11,13 @@ public class MappingProfile : Profile
         // User mappings
         CreateMap<ApplicationUser, UserDto>();
         CreateMap<ApplicationUser, PublicUserDto>();
+
+        // Post mappings
+        CreateMap<Post, PostDto>()
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User));
+
+        // Comment mappings
+        CreateMap<Comment, CommentDto>()
+            .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User));
     }
 }

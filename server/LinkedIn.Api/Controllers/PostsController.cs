@@ -2,6 +2,8 @@ using LinkedIn.Application.DTOs;
 using LinkedIn.Application.Features.Posts.Commands.CreatePost;
 using LinkedIn.Application.Features.Posts.Commands.LikePost;
 using LinkedIn.Application.Features.Posts.Queries.GetFeed;
+using LinkedIn.Application.Features.Comments.Commands.AddComment;
+using LinkedIn.Application.Features.Comments.Queries.GetPostComments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -126,6 +128,68 @@ public class PostsController : ControllerBase
         {
             _logger.LogError(ex, "Error liking post");
             return StatusCode(500, new { message = "An error occurred while liking the post" });
+        }
+    }
+
+    /// <summary>
+    /// Get comments for a post
+    /// </summary>
+    [HttpGet("{postId}/comments")]
+    [ProducesResponseType(typeof(List<CommentDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetComments(Guid postId)
+    {
+        try
+        {
+            var query = new GetPostCommentsQuery { PostId = postId };
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error fetching comments for post {PostId}", postId);
+            return StatusCode(500, new { message = "An error occurred while fetching comments" });
+        }
+    }
+
+    /// <summary>
+    /// Add a comment to a post
+    /// </summary>
+    [HttpPost("{postId}/comments")]
+    [ProducesResponseType(typeof(CommentDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AddComment(Guid postId, [FromBody] CreateCommentDto dto)
+    {
+        try
+        {
+            var userId = GetUserId();
+            if (!userId.HasValue)
+            {
+                return Unauthorized(new { message = "User not authenticated" });
+            }
+
+            var command = new AddCommentCommand
+            {
+                PostId = postId,
+                UserId = userId.Value,
+                Content = dto.Content,
+                ParentCommentId = dto.ParentCommentId
+            };
+
+            var result = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetComments), new { postId }, result);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning(ex, "Failed to add comment");
+            return NotFound(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding comment to post {PostId}", postId);
+            return StatusCode(500, new { message = "An error occurred while adding the comment" });
         }
     }
 
