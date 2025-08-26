@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { createPost, fetchPosts, likePost } from '../../features/posts/postsSlice';
 import { toast } from 'react-toastify';
+import Comments from './Comments';
 
 const Main: React.FC = () => {
   const [showPostModal, setShowPostModal] = useState(false);
@@ -228,6 +229,7 @@ const Main: React.FC = () => {
                 </button>
               </CommentSection>
             </Description>
+            <Comments postId={post.id} />
           </Article>
         ))}
       </div>

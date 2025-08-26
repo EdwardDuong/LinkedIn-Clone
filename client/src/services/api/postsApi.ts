@@ -1,5 +1,5 @@
 import axiosInstance from './axios.config';
-import type { Post, CreatePostRequest } from '../../../../shared/types/post.types';
+import type { Post, CreatePostRequest, Comment } from '../../../../shared/types/post.types';
 
 export const postsApi = {
   createPost: async (data: CreatePostRequest): Promise<Post> => {
@@ -18,5 +18,15 @@ export const postsApi = {
 
   deletePost: async (postId: string): Promise<void> => {
     await axiosInstance.delete(`/posts/${postId}`);
+  },
+
+  getComments: async (postId: string): Promise<Comment[]> => {
+    const response = await axiosInstance.get<Comment[]>(`/posts/${postId}/comments`);
+    return response.data;
+  },
+
+  addComment: async (postId: string, content: string): Promise<Comment> => {
+    const response = await axiosInstance.post<Comment>(`/posts/${postId}/comments`, { content });
+    return response.data;
   },
 };
