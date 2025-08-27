@@ -24,7 +24,13 @@ const Header: React.FC = () => {
         <div className="header-search">
           <div className="header-search_container">
             <img src="/images/search-icon.svg" alt="Search" />
-            <input type="text" placeholder="Search" />
+            <input
+              type="text"
+              placeholder="Search"
+              onClick={() => navigate('/search')}
+              readOnly
+              style={{ cursor: 'pointer' }}
+            />
           </div>
         </div>
         <div className="hearder-nav">
