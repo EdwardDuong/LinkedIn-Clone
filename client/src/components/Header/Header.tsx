@@ -44,10 +44,11 @@ const Header: React.FC = () => {
             </div>
             <div className="header-nav_item">
               <a
-                href="/home"
+                href="/network"
                 onClick={(e) => {
                   e.preventDefault();
                   setActive(1);
+                  navigate('/network');
                 }}
                 className={active === 1 ? 'actived' : ''}
               >

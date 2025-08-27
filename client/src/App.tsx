@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './components/Login/Login';
 import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
+import Network from './components/Network/Network';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAppSelector } from './app/hooks';
 
@@ -32,6 +33,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/network"
+            element={
+              <ProtectedRoute>
+                <Network />
               </ProtectedRoute>
             }
           />
