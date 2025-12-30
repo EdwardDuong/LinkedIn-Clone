@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logoutUser } from '../../features/auth/authSlice';
+import { useGetNotificationsQuery } from '../../services/api/notificationApi';
 import './header.css';
 
 const Header: React.FC = () => {
@@ -9,6 +10,8 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const { data: notifications } = useGetNotificationsQuery(true);
+  const unreadCount = notifications?.length || 0;
 
   const handleSignOut = async () => {
     await dispatch(logoutUser());
@@ -90,15 +93,38 @@ const Header: React.FC = () => {
             </div>
             <div className="header-nav_item">
               <a
-                href="/home"
+                href="/notifications"
                 onClick={(e) => {
                   e.preventDefault();
                   setActive(4);
+                  navigate('/notifications');
                 }}
                 className={active === 4 ? 'actived' : ''}
+                style={{ position: 'relative' }}
               >
                 <img src="/images/nav-notifications.svg" alt="Notifications" />
                 <span>Notifications</span>
+                {unreadCount > 0 && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '0',
+                      left: '20px',
+                      backgroundColor: '#d11124',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '18px',
+                      height: '18px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
               </a>
             </div>
             <div className="header-nav_user">

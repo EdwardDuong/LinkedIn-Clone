@@ -22,5 +22,9 @@ public class MappingProfile : Profile
 
         // Connection mappings
         CreateMap<Connection, ConnectionDto>();
+
+        // Notification mappings
+        CreateMap<Notification, Features.Notifications.Queries.GetUserNotifications.NotificationDto>()
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()));
     }
 }

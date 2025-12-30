@@ -5,6 +5,7 @@ import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
 import Network from './components/Network/Network';
 import Search from './components/Search/Search';
+import Notifications from './components/Notifications/Notifications';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAppSelector } from './app/hooks';
 
@@ -50,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Search />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
               </ProtectedRoute>
             }
           />
