@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { logoutUser } from '../../features/auth/authSlice';
 import { useGetNotificationsQuery } from '../../services/api/notificationApi';
+import { useGetConversationsQuery } from '../../services/api/messageApi';
 import './header.css';
 
 const Header: React.FC = () => {
@@ -11,7 +12,9 @@ const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { data: notifications } = useGetNotificationsQuery(true);
-  const unreadCount = notifications?.length || 0;
+  const { data: conversations } = useGetConversationsQuery();
+  const unreadNotificationsCount = notifications?.length || 0;
+  const unreadMessagesCount = conversations?.reduce((sum, conv) => sum + conv.unreadCount, 0) || 0;
 
   const handleSignOut = async () => {
     await dispatch(logoutUser());
@@ -80,31 +83,18 @@ const Header: React.FC = () => {
             </div>
             <div className="header-nav_item">
               <a
-                href="/home"
+                href="/messages"
                 onClick={(e) => {
                   e.preventDefault();
                   setActive(3);
+                  navigate('/messages');
                 }}
                 className={active === 3 ? 'actived' : ''}
+                style={{ position: 'relative' }}
               >
                 <img src="/images/nav-messaging.svg" alt="Messaging" />
                 <span>Message</span>
-              </a>
-            </div>
-            <div className="header-nav_item">
-              <a
-                href="/notifications"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActive(4);
-                  navigate('/notifications');
-                }}
-                className={active === 4 ? 'actived' : ''}
-                style={{ position: 'relative' }}
-              >
-                <img src="/images/nav-notifications.svg" alt="Notifications" />
-                <span>Notifications</span>
-                {unreadCount > 0 && (
+                {unreadMessagesCount > 0 && (
                   <span
                     style={{
                       position: 'absolute',
@@ -122,7 +112,43 @@ const Header: React.FC = () => {
                       justifyContent: 'center',
                     }}
                   >
-                    {unreadCount > 9 ? '9+' : unreadCount}
+                    {unreadMessagesCount > 9 ? '9+' : unreadMessagesCount}
+                  </span>
+                )}
+              </a>
+            </div>
+            <div className="header-nav_item">
+              <a
+                href="/notifications"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActive(4);
+                  navigate('/notifications');
+                }}
+                className={active === 4 ? 'actived' : ''}
+                style={{ position: 'relative' }}
+              >
+                <img src="/images/nav-notifications.svg" alt="Notifications" />
+                <span>Notifications</span>
+                {unreadNotificationsCount > 0 && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '0',
+                      left: '20px',
+                      backgroundColor: '#d11124',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '18px',
+                      height: '18px',
+                      fontSize: '11px',
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
                   </span>
                 )}
               </a>

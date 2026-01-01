@@ -26,5 +26,9 @@ public class MappingProfile : Profile
         // Notification mappings
         CreateMap<Notification, Features.Notifications.Queries.GetUserNotifications.NotificationDto>()
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()));
+
+        // Message mappings
+        CreateMap<Message, MessageDto>();
+        CreateMap<Conversation, ConversationDto>();
     }
 }
