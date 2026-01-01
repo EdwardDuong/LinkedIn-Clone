@@ -3,6 +3,7 @@ import authReducer from '../features/auth/authSlice';
 import postsReducer from '../features/posts/postsSlice';
 import { notificationApi } from '../services/api/notificationApi';
 import { messageApi } from '../services/api/messageApi';
+import { profileApi } from '../services/api/profileApi';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     posts: postsReducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [messageApi.reducerPath]: messageApi.reducer,
+    [profileApi.reducerPath]: profileApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -19,7 +21,8 @@ export const store = configureStore({
       },
     })
       .concat(notificationApi.middleware)
-      .concat(messageApi.middleware),
+      .concat(messageApi.middleware)
+      .concat(profileApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

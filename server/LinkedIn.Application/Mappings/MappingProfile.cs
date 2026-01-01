@@ -30,5 +30,9 @@ public class MappingProfile : Profile
         // Message mappings
         CreateMap<Message, MessageDto>();
         CreateMap<Conversation, ConversationDto>();
+
+        // Experience and Education mappings
+        CreateMap<Experience, ExperienceDto>();
+        CreateMap<Education, EducationDto>();
     }
 }
